@@ -25,7 +25,7 @@ mv "$TMP_DIR"/druid-* "$STAGING_DIR/dist/druid"
 # Run pull-deps for all builtin extensions
 java \
   -cp "$STAGING_DIR/dist/druid/lib/*" \
-  -Ddruid.extensions.coordinates='["io.druid.extensions:druid-azure-extensions", "io.druid.extensions:druid-examples", "io.druid.extensions:druid-hdfs-storage", "io.druid.extensions:druid-histogram", "io.druid.extensions:druid-kafka-eight", "io.druid.extensions:druid-kafka-extraction-namespace", "io.druid.extensions:druid-namespace-lookup", "io.druid.extensions:druid-rabbitmq", "io.druid.extensions:druid-s3-extensions", "io.druid.extensions:mysql-metadata-storage", "io.druid.extensions:postgresql-metadata-storage"]' \
+  -Ddruid.extensions.coordinates='["io.druid.extensions:druid-azure-extensions", "io.druid.extensions:druid-datasketches", "io.druid.extensions:druid-examples", "io.druid.extensions:druid-hdfs-storage", "io.druid.extensions:druid-histogram", "io.druid.extensions:druid-kafka-eight", "io.druid.extensions:druid-kafka-extraction-namespace", "io.druid.extensions:druid-namespace-lookup", "io.druid.extensions:druid-rabbitmq", "io.druid.extensions:druid-s3-extensions", "io.druid.extensions:mysql-metadata-storage", "io.druid.extensions:postgresql-metadata-storage"]' \
   -Ddruid.extensions.localRepository="$STAGING_DIR/dist/druid/extensions-repo" \
   io.druid.cli.Main tools pull-deps
 

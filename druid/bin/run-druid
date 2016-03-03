@@ -22,5 +22,5 @@ WHEREAMI="$(cd "$WHEREAMI" && pwd)"
 
 cd "$WHEREAMI/.."
 exec java `cat "$CONFDIR"/"$WHATAMI"/jvm.config | xargs` \
-  -cp "$CONFDIR"/_common:"$CONFDIR"/"$WHATAMI":`ls "$WHEREAMI"/../dist/druid/lib/*.jar | xargs | tr ' ' ':'` \
+  -cp "$CONFDIR"/_common:"$CONFDIR"/"$WHATAMI":"dist/druid/lib/*" \
   `cat "$CONFDIR"/$WHATAMI/main.config | xargs`

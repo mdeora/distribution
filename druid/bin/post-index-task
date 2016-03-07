@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 import sys
 import time
 import urllib2
@@ -30,9 +31,10 @@ def post_task(args, task_json, timeout_at):
   except urllib2.URLError as e:
     if isinstance(e, urllib2.HTTPError) and e.code >= 400 and e.code <= 500:
       # 4xx (problem with the request) or 500 (something wrong on the server)
-      raise
+      raise_friendly_error(e)
     elif time.time() >= timeout_at:
-      raise
+      # No futher retries
+      raise_friendly_error(e)
     elif isinstance(e, urllib2.HTTPError) and e.code in [301, 302, 303, 305, 307] and \
         e.info().getheader("Location") is not None:
       # Set the new location in args.url so it can be used by await_task_completion and re-issue the request
@@ -72,6 +74,15 @@ def await_task_completion(args, task_id, timeout_at):
         time.sleep(min(5, timeleft))
       else:
         raise Exception("Task {0} did not finish in time!".format(task_id))
+
+def raise_friendly_error(e):
+  if isinstance(e, urllib2.HTTPError):
+    text = e.read().strip()
+    reresult = re.search(r'<pre>(.*?)</pre>', text, re.DOTALL)
+    if reresult:
+      text = reresult.group(1).strip()
+    raise Exception("HTTP Error {0}: {1}, check overlord log for more details.\n{2}".format(e.code, e.reason, text))
+  raise e
 
 def main():
   parser = argparse.ArgumentParser(description='Post Druid indexing tasks.')

@@ -31,7 +31,7 @@ STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/druid
 
 if [ "$IMPLY_LONG_VERSION" != "" ]
 then
-  IMPLY_VERSION="$IMPLY_BASE_VERSION$(cat "$TMP_DIR/version.txt")"
+  IMPLY_VERSION="$IMPLY_BASE_VERSION-$IMPLY_COMMIT$(cat "$TMP_DIR/version.txt")"
 else
   IMPLY_VERSION="$IMPLY_BASE_VERSION"
 fi

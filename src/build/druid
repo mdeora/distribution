@@ -3,7 +3,7 @@
 # Clone upstream project
 UPSTREAM_NAME="druid"
 UPSTREAM_REPO="https://github.com/implydata/$UPSTREAM_NAME.git"
-UPSTREAM_COMMITISH="druid-0.8.3-iap3"
+UPSTREAM_COMMITISH="druid-0.9.0"
 UPSTREAM_DIR="$TMP_DIR/$UPSTREAM_NAME.git"
 
 # We're including derbytools too
@@ -12,22 +12,14 @@ DERBYTOOLS_VERSION="10.11.1.1"
 git clone -b "$UPSTREAM_COMMITISH" --single-branch --depth 1 "$UPSTREAM_REPO" "$UPSTREAM_DIR"
 (cd "$UPSTREAM_DIR" && git checkout "$UPSTREAM_COMMITISH")
 
-UPSTREAM_COMMIT=$(cd "$UPSTREAM_DIR" && git rev-list --max-count 1 --abbrev-commit HEAD)
-
-# Build upstream project, skipTests because tests were already run on this tag
+# Build upstream project, skipTests because tests were already run on this tag.
 (cd "$UPSTREAM_DIR" && mvn package -DskipTests)
 
 # Stage upstream project
 mkdir -p "$STAGING_DIR/dist"
 tar -C "$TMP_DIR" -xzf "$UPSTREAM_DIR"/distribution/target/druid-*-bin.tar.gz
 mv "$TMP_DIR"/druid-* "$STAGING_DIR/dist/druid"
-
-# Run pull-deps for all builtin extensions
-java \
-  -cp "$STAGING_DIR/dist/druid/lib/*" \
-  -Ddruid.extensions.coordinates='["io.druid.extensions:druid-azure-extensions", "io.druid.extensions:druid-datasketches", "io.druid.extensions:druid-examples", "io.druid.extensions:druid-hdfs-storage", "io.druid.extensions:druid-histogram", "io.druid.extensions:druid-kafka-eight", "io.druid.extensions:druid-kafka-extraction-namespace", "io.druid.extensions:druid-namespace-lookup", "io.druid.extensions:druid-rabbitmq", "io.druid.extensions:druid-s3-extensions", "io.druid.extensions:mysql-metadata-storage", "io.druid.extensions:postgresql-metadata-storage"]' \
-  -Ddruid.extensions.localRepository="$STAGING_DIR/dist/druid/extensions-repo" \
-  io.druid.cli.Main tools pull-deps
+tar -C "$STAGING_DIR/dist/druid/extensions" -xzf "$UPSTREAM_DIR"/distribution/target/mysql-metadata-storage*.tar.gz
 
 # Add derbytools to lib
 DERBYTOOLS_LOCATION="$STAGING_DIR/dist/druid/lib/derbytools-$DERBYTOOLS_VERSION.jar"
@@ -40,15 +32,29 @@ then
 fi
 
 # Put druid on a diet
-for JAR in "$STAGING_DIR"/dist/druid/lib/*.jar
-do
-  JARNAME="$(basename "$JAR")"
-  FOUND="$(cd "$STAGING_DIR"/dist/druid && find extensions-repo -name "$JARNAME")"
-  if [ "x$FOUND" != "x" ]
-  then
-    ln -sf "../$FOUND" "$JAR"
-  fi
-done
+perl <<'EOT'
+use strict;
+use File::Basename;
+
+my $dir = "$ENV{STAGING_DIR}/dist/druid";
+chdir $dir or die "chdir $dir: $!";
+
+my %jars;
+for my $jar (qx!find ./lib -name '*.jar'!, qx!find ./extensions -name '*.jar'!, qx!find ./hadoop-dependencies -name '*.jar'!) {
+  chomp $jar;
+  my $jarname = basename($jar);
+  if (exists $jars{$jarname}) {
+    my $depth = $jar =~ tr !/!/! - 1;
+    my $dots = "";
+    for my $x (1..$depth) {
+      $dots .= "../";
+    }
+    system("ln", "-sf", "${dots}$jars{$jarname}", $jar);
+  } else {
+    $jars{$jarname} = $jar;
+  }
+}
+EOT
 
 # Write version
 UPSTREAM_COMMIT="$(cd "$UPSTREAM_DIR" && git rev-list --max-count 1 --abbrev-commit HEAD)"

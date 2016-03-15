@@ -32,6 +32,7 @@ my $druid_result_minus_id = $iap->query_druid({
 delete $druid_result_minus_id->[0]{id};
 
 my $druid_expected_minus_id = [{
+  "aggregators" => undef,
   "columns" => {
      "__time" => {"cardinality" => undef, "errorMessage" => undef, "size" => 0, "type" => "LONG", "hasMultipleValues" => $JSON::false},
      "added" => {"cardinality" => undef, "errorMessage" => undef, "size" => 0, "type" => "LONG", "hasMultipleValues" => $JSON::false},

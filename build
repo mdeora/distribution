@@ -7,20 +7,37 @@ then
   exit 1
 fi
 
-COMMIT="$(git rev-list --max-count 1 --abbrev-commit HEAD)"
-
 IMPLY_NAME="imply"
-IMPLY_VERSION="1.1.0-$COMMIT"
+IMPLY_COMMIT="$(git rev-list --max-count 1 --abbrev-commit HEAD)"
+IMPLY_BASE_VERSION="1.1.1"
+
+# Create staging directory
+mkdir -p "$STAGING_DIR/$IMPLY_NAME"
+
+# Copy bin, conf, and quickstart stuff
+for dir in bin conf conf-quickstart quickstart
+do
+  cp -R src/"$dir" "$STAGING_DIR/$IMPLY_NAME/$dir"
+done
+
+# Unzip quickstart data file
+gunzip "$STAGING_DIR/$IMPLY_NAME/quickstart/wikiticker-2015-09-12-sampled.json.gz"
+
+# Fetch and build software
+STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/zk
+STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/bard
+STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/tranquility
+STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/druid
+
+if [ "$IMPLY_LONG_VERSION" != "" ]
+then
+  IMPLY_VERSION="$IMPLY_BASE_VERSION$(cat "$TMP_DIR/version.txt")"
+else
+  IMPLY_VERSION="$IMPLY_BASE_VERSION"
+fi
+
 IMPLY_DIR="${IMPLY_NAME}-${IMPLY_VERSION}"
-
-mkdir -p "$STAGING_DIR/$IMPLY_DIR"
-
-STAGING_DIR="$STAGING_DIR/$IMPLY_DIR" quickstart/build
-STAGING_DIR="$STAGING_DIR/$IMPLY_DIR" supervise/build
-STAGING_DIR="$STAGING_DIR/$IMPLY_DIR" zk/build
-STAGING_DIR="$STAGING_DIR/$IMPLY_DIR" bard/build
-STAGING_DIR="$STAGING_DIR/$IMPLY_DIR" tranquility/build
-STAGING_DIR="$STAGING_DIR/$IMPLY_DIR" druid/build
+mv "$STAGING_DIR/$IMPLY_NAME" "$STAGING_DIR/$IMPLY_DIR"
 
 echo "$IMPLY_VERSION" > "$STAGING_DIR"/build.version
 echo "$IMPLY_VERSION" > "$STAGING_DIR"/"$IMPLY_DIR"/dist/VERSION.txt

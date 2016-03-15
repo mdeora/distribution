@@ -3,7 +3,7 @@
 # Clone upstream project
 UPSTREAM_NAME="druid"
 UPSTREAM_REPO="https://github.com/implydata/$UPSTREAM_NAME.git"
-UPSTREAM_COMMITISH="druid-0.8.3-iap1"
+UPSTREAM_COMMITISH="druid-0.8.3-iap3"
 UPSTREAM_DIR="$TMP_DIR/$UPSTREAM_NAME.git"
 
 # We're including derbytools too
@@ -50,8 +50,6 @@ do
   fi
 done
 
-# Copy bin, conf
-mkdir -p "$STAGING_DIR/bin" "$STAGING_DIR/conf" "$STAGING_DIR/conf-quickstart"
-cp druid/bin/* "$STAGING_DIR/bin"
-cp -R druid/conf "$STAGING_DIR/conf/druid"
-cp -R druid/conf-quickstart "$STAGING_DIR/conf-quickstart/druid"
+# Write version
+UPSTREAM_COMMIT="$(cd "$UPSTREAM_DIR" && git rev-list --max-count 1 --abbrev-commit HEAD)"
+echo -n "-$UPSTREAM_NAME-$UPSTREAM_COMMIT" >> "$TMP_DIR/version.txt"

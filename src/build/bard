@@ -34,8 +34,6 @@ for module in $DEPENDENCIES; do
   cp -r "$UPSTREAM_DIR"/node_modules/$module "$MODULE_DIR/$module"
 done
 
-# Copy bin, conf
-mkdir -p "$STAGING_DIR/bin" "$STAGING_DIR/conf" "$STAGING_DIR/conf-quickstart"
-cp bard/bin/* "$STAGING_DIR/bin"
-cp -R bard/conf "$STAGING_DIR/conf/bard"
-cp -R bard/conf-quickstart "$STAGING_DIR/conf-quickstart/bard"
+# Write version
+UPSTREAM_COMMIT="$(cd "$UPSTREAM_DIR" && git rev-list --max-count 1 --abbrev-commit HEAD)"
+echo -n "-$UPSTREAM_NAME-$UPSTREAM_COMMIT" >> "$TMP_DIR/version.txt"

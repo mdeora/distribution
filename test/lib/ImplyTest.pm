@@ -139,20 +139,20 @@ sub get_pivot_config
       "-L",
       "http://localhost:9095/pivot"
     ]);
-    if ($rsp =~ m!var PIVOT_CONFIG = (.*);</script>!) {
+    if ($rsp =~ m!var __CONFIG__ = (.*);</script>!) {
       my $obj = JSON::decode_json($1);
       if (@{$obj->{dataSources}} >= $expected_num_datasources) {
         return $obj;
       } else {
-        die "not enough dataSources";
+        die "not enough dataSources, got $rsp";
       }
     } else {
-      die "can't find PIVOT_CONFIG";
+      die "can't find __CONFIG__";
     }
   }, tries => 15);
 }
 
-sub post_bard
+sub post_pivot
 {
   my ($self, $path, $query_object) = @_;
   my $query_json = JSON::encode_json($query_object);

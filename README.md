@@ -6,7 +6,6 @@ If you have found a bug, please file packaging-related issues here, and please
 file issues related to the bundled projects at their respective project sites:
 
 - https://github.com/druid-io/druid
-- https://github.com/implydata/bard
 - https://github.com/implydata/pivot
 - https://github.com/implydata/plywood
 

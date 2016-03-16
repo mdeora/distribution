@@ -6,33 +6,27 @@ command -v jq >/dev/null 2>&1 || {
 }
 
 # Clone upstream project
-UPSTREAM_NAME="bard"
+UPSTREAM_NAME="pivot"
 UPSTREAM_REPO="https://github.com/implydata/$UPSTREAM_NAME.git"
-UPSTREAM_COMMITISH="v0.6.5"
+UPSTREAM_COMMITISH="v0.7.40"
 UPSTREAM_DIR="$TMP_DIR/$UPSTREAM_NAME.git"
 
 git clone -b "$UPSTREAM_COMMITISH" --single-branch --depth 1 "$UPSTREAM_REPO" "$UPSTREAM_DIR"
 (cd "$UPSTREAM_DIR" && git checkout "$UPSTREAM_COMMITISH")
 
 # Build upstream project
-(cd "$UPSTREAM_DIR" && ./script/prod-build)
+(cd "$UPSTREAM_DIR" && ./script/prod-build && npm install plyql@0.6.6)
 
-# Stage bard into dist/
+# Stage pivot into dist/
 TARGET_DIR="$STAGING_DIR/dist/$UPSTREAM_NAME"
 mkdir -p "$TARGET_DIR"
 
 cp "$UPSTREAM_DIR"/package.json "$TARGET_DIR/package.json"
-cp -R "$UPSTREAM_DIR"/build "$TARGET_DIR/build"
-cp -R "$UPSTREAM_DIR"/src "$TARGET_DIR/src"       # Contains views
-cp -R "$UPSTREAM_DIR"/assets "$TARGET_DIR/assets"
-
-MODULE_DIR="$TARGET_DIR/node_modules"
-mkdir "$MODULE_DIR"
-
-DEPENDENCIES=$(jq -r '.dependencies | to_entries | .[] | .key' "$UPSTREAM_DIR"/package.json)
-for module in $DEPENDENCIES; do
-  cp -r "$UPSTREAM_DIR"/node_modules/$module "$MODULE_DIR/$module"
-done
+cp -r "$UPSTREAM_DIR"/build "$TARGET_DIR/build"
+cp -r "$UPSTREAM_DIR"/assets "$TARGET_DIR/assets"
+rm -r "$TARGET_DIR/assets/data"
+cp -r "$UPSTREAM_DIR"/node_modules "$TARGET_DIR/node_modules"
+cp -r "$UPSTREAM_DIR"/bin "$TARGET_DIR/bin"
 
 # Write version
 UPSTREAM_COMMIT="$(cd "$UPSTREAM_DIR" && git rev-list --max-count 1 --abbrev-commit HEAD)"

@@ -98,11 +98,8 @@ my @datasources = sort map { $_->{name} } @{$pivot_result->{'dataSources'}};
 eq_or_diff(\@datasources, ['metrics'], 'example pivot config includes metrics datasource');
 
 # PlyQL query
-# $next_ts is a workaround for https://github.com/implydata/plyql/issues/2
-my $next_ts = $ts;
-$next_ts =~ s/\.000Z/\.001Z/;
-my $plyql_result = $iap->post_bard("/plyql", {
-  query => "SELECT page, SUM(value_sum) AS Value FROM metrics WHERE '$ts' <= time AND time < '$next_ts' GROUP BY page ORDER BY Value DESC LIMIT 5",
+my $plyql_result = $iap->post_pivot("/plyql", {
+  query => "SELECT page, SUM(value_sum) AS Value FROM metrics WHERE '$ts' = __time GROUP BY page ORDER BY Value DESC LIMIT 5",
   outputType => 'json'
 });
 my $plyql_expected = [

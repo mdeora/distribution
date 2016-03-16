@@ -7,4 +7,4 @@ WHEREAMI="$(cd "$WHEREAMI" && pwd)"
 "$WHEREAMI"/../bin/verify-node
 
 cd "$WHEREAMI/.."
-exec node "$WHEREAMI"/../dist/pivot/node_modules/plyql/bin/plyql "$@"
+exec node "$WHEREAMI"/../dist/pivot/bin/pivot --print-config "$@"

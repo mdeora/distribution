@@ -64,8 +64,8 @@ my @datasources = sort map { $_->{name} } @{$pivot_result->{'dataSources'}};
 eq_or_diff(\@datasources, ['wikiticker'], 'example pivot config includes all datasources');
 
 # PlyQL query
-my $plyql_result = $iap->post_bard("/plyql", {
-  query => "SELECT page, SUM(count) AS Edits FROM wikiticker WHERE '2015-09-12T00:00:00' <= time AND time < '2015-09-13T00:00:00' GROUP BY page ORDER BY Edits DESC LIMIT 5",
+my $plyql_result = $iap->post_pivot("/plyql", {
+  query => "SELECT page, SUM(count) AS Edits FROM wikiticker WHERE '2015-09-12T00:00:00' <= __time AND __time < '2015-09-13T00:00:00' GROUP BY page ORDER BY Edits DESC LIMIT 5",
   outputType => 'json'
 });
 my $plyql_expected = [
@@ -104,7 +104,7 @@ my $plywood_query = JSON::decode_json(<<'EOT');
                             }
                          }
                       ],
-                      "expression" : {"name":"time", "op":"ref"},
+                      "expression" : {"name":"__time", "op":"ref"},
                       "op" : "chain"
                    }
                 }
@@ -134,7 +134,7 @@ my $plywood_query = JSON::decode_json(<<'EOT');
 }
 EOT
 
-my $plywood_result = $iap->post_bard("/plywood", $plywood_query);
+my $plywood_result = $iap->post_pivot("/plywood", $plywood_query);
 my $plywood_expected = [
   {"count" => 39243}
 ];
@@ -243,8 +243,8 @@ my @datasources = sort map { $_->{name} } @{$pivot_result->{'dataSources'}};
 eq_or_diff(\@datasources, ['pageviews', 'wikiticker'], 'pageviews pivot config includes all datasources');
 
 # PlyQL query
-my $plyql_result = $iap->post_bard("/plyql", {
-  query => "SELECT user, SUM(views) FROM pageviews WHERE '2015-09-01T00:00:00' <= time AND time < '2015-09-02T00:00:00' GROUP BY user ORDER BY user",
+my $plyql_result = $iap->post_pivot("/plyql", {
+  query => "SELECT user, SUM(views) FROM pageviews WHERE '2015-09-01T00:00:00' <= __time AND __time < '2015-09-02T00:00:00' GROUP BY user ORDER BY user",
   outputType => 'json'
 });
 my $plyql_expected = [

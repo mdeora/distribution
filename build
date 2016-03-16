@@ -25,7 +25,7 @@ gunzip "$STAGING_DIR/$IMPLY_NAME/quickstart/wikiticker-2015-09-12-sampled.json.g
 
 # Fetch and build software
 STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/zk
-STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/bard
+STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/pivot
 STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/tranquility
 STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/druid
 

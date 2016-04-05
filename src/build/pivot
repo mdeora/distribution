@@ -8,14 +8,14 @@ command -v jq >/dev/null 2>&1 || {
 # Clone upstream project
 UPSTREAM_NAME="pivot"
 UPSTREAM_REPO="https://github.com/implydata/$UPSTREAM_NAME.git"
-UPSTREAM_COMMITISH="v0.7.40"
+UPSTREAM_COMMITISH="v0.8.8"
 UPSTREAM_DIR="$TMP_DIR/$UPSTREAM_NAME.git"
 
 git clone -b "$UPSTREAM_COMMITISH" --single-branch --depth 1 "$UPSTREAM_REPO" "$UPSTREAM_DIR"
 (cd "$UPSTREAM_DIR" && git checkout "$UPSTREAM_COMMITISH")
 
 # Build upstream project
-(cd "$UPSTREAM_DIR" && ./script/prod-build && npm install plyql@0.6.6)
+(cd "$UPSTREAM_DIR" && ./script/prod-build && npm install plyql@0.6.21)
 
 # Stage pivot into dist/
 TARGET_DIR="$STAGING_DIR/dist/$UPSTREAM_NAME"

@@ -99,7 +99,7 @@ eq_or_diff(\@datasources, ['metrics'], 'example pivot config includes metrics da
 
 # PlyQL query
 my $plyql_result = $iap->post_pivot("/plyql", {
-  query => "SELECT page, SUM(value_sum) AS Value FROM metrics WHERE '$ts' = __time GROUP BY page ORDER BY Value DESC LIMIT 5",
+  query => "SELECT page, SUM(value_sum) AS Value FROM metrics WHERE TIMESTAMP '$ts' = __time GROUP BY page ORDER BY Value DESC LIMIT 5",
   outputType => 'json'
 });
 my $plyql_expected = [

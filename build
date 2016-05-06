@@ -9,7 +9,7 @@ fi
 
 IMPLY_NAME="imply"
 IMPLY_COMMIT="$(git rev-list --max-count 1 --abbrev-commit HEAD)"
-IMPLY_BASE_VERSION="1.2.0"
+IMPLY_BASE_VERSION="1.2.1"
 
 # Create staging directory
 mkdir -p "$STAGING_DIR/$IMPLY_NAME"

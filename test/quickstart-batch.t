@@ -248,8 +248,8 @@ my $plyql_result = $iap->post_pivot("/plyql", {
   outputType => 'json'
 });
 my $plyql_expected = [
-  {"user" => "alice", "SUM_views" => 1},
-  {"user" => "bob", "SUM_views" => 2},
+  {"user" => "alice", "SUM(views)" => 1},
+  {"user" => "bob", "SUM(views)" => 2},
 ];
 
 eq_or_diff($plyql_result, $plyql_expected, 'pageviews plyql query results are as expected');

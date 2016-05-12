@@ -13,14 +13,14 @@ sub logdie($)
 {
   my ($msg) = @_;
   chomp $msg;
-  die "[" . localtime . "] $msg\n";
+  die "[" . (scalar localtime()) . "] $msg\n";
 }
 
 sub logit($)
 {
   my ($msg) = @_;
   chomp $msg;
-  warn "[" . localtime . "] $msg\n";
+  warn "[" . (scalar localtime()) . "] $msg\n";
 }
 
 sub usage

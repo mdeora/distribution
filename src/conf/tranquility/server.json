@@ -1,6 +1,6 @@
 {
-  "dataSources" : {
-    "metrics" : {
+  "dataSources" : [
+    {
       "spec" : {
         "dataSchema" : {
           "dataSource" : "metrics",
@@ -63,7 +63,7 @@
         "task.replicants" : "1"
       }
     }
-  },
+  ],
   "properties" : {
     "zookeeper.connect" : "master.example.com",
     "druid.discovery.curator.path" : "/druid/discovery",

@@ -1,6 +1,6 @@
 {
-  "dataSources" : {
-    "metrics-kafka" : {
+  "dataSources" : [
+    {
       "spec" : {
         "dataSchema" : {
           "dataSource" : "metrics-kafka",
@@ -64,7 +64,7 @@
         "topicPattern" : "metrics"
       }
     }
-  },
+  ],
   "properties" : {
     "zookeeper.connect" : "localhost",
     "druid.discovery.curator.path" : "/druid/discovery",

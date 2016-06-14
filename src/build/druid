@@ -2,8 +2,8 @@
 
 # Clone upstream project
 UPSTREAM_NAME="druid"
-UPSTREAM_REPO="https://github.com/implydata/$UPSTREAM_NAME.git"
-UPSTREAM_COMMITISH="druid-0.9.0"
+UPSTREAM_REPO="https://github.com/druid-io/$UPSTREAM_NAME.git"
+UPSTREAM_COMMITISH="druid-0.9.1-rc4"
 UPSTREAM_DIR="$TMP_DIR/$UPSTREAM_NAME.git"
 
 # We're including derbytools too

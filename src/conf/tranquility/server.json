@@ -69,6 +69,8 @@
     "druid.discovery.curator.path" : "/druid/discovery",
     "druid.selectors.indexing.serviceName" : "druid/overlord",
     "http.port" : "8200",
-    "http.threads" : "40"
+    "http.threads" : "40",
+    "serialization.format" : "smile",
+    "druidBeam.taskLocator": "overlord"
   }
 }

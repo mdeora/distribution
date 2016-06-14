@@ -72,6 +72,8 @@
     "commit.periodMillis" : "15000",
     "consumer.numThreads" : "2",
     "kafka.zookeeper.connect" : "localhost",
-    "kafka.group.id" : "tranquility-kafka"
+    "kafka.group.id" : "tranquility-kafka",
+    "serialization.format" : "smile",
+    "druidBeam.taskLocator": "overlord"
   }
 }

@@ -1,19 +1,23 @@
 # The port on which the Pivot server will listen on.
 port: 9095
 
-# A Druid broker node that can serve data (only used if you have Druid based data source)
-druidHost: localhost:8082
+clusters:
+  - name: druid
+    type: druid
 
-# Use SegmentMetadataQuery for introspection, rather than Broker GET routes.
-useSegmentMetadata: true
+    # A Druid broker node that can serve data (only used if you have Druid based data source)
+    host: localhost:8082
 
-# Background introspection frequency (in ms)
-# - Set to '0' to disable background introspection.
-sourceListRefreshInterval: 0
+    # Use SegmentMetadataQuery for introspection, rather than Broker GET routes.
+    useSegmentMetadata: true
 
-# Foreground introspection
-# Checks for new dataSources every time Pivot is loaded (default: false)
-sourceListRefreshOnLoad: true
+    # Background introspection frequency (in ms)
+    # - Set to '0' to disable background introspection.
+    sourceListRefreshInterval: 0
+
+    # Foreground introspection
+    # Checks for new dataSources every time Pivot is loaded (default: false)
+    sourceListRefreshOnLoad: true
 
 # The data sources that you have configured, these will appear, in order, inside the navigation menu of Pivot
 # In general there can be two types of 'engine':

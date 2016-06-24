@@ -18,8 +18,8 @@ my $dir = $iap->dir;
 my $server_json = JSON::decode_json(
   do { local $/; open my $fh, "<", "$dir/conf-quickstart/tranquility/server.json" or die; <$fh> }
 );
-$server_json->{'dataSources'}{'metrics'}{'spec'}{'dataSchema'}{'granularitySpec'}{'segmentGranularity'} = 'minute';
-$server_json->{'dataSources'}{'metrics'}{'spec'}{'tuningConfig'}{'windowPeriod'} = 'PT1M';
+$server_json->{'dataSources'}[0]{'spec'}{'dataSchema'}{'granularitySpec'}{'segmentGranularity'} = 'minute';
+$server_json->{'dataSources'}[0]{'spec'}{'tuningConfig'}{'windowPeriod'} = 'PT1M';
 $server_json->{'properties'}{'druidBeam.firehoseGracePeriod'} = 'PT0S';
 open my $fh, ">", "$dir/conf-quickstart/tranquility/server.json";
 print $fh JSON::encode_json($server_json);

@@ -141,7 +141,7 @@ sub get_pivot_config
     ]);
     if ($rsp =~ m!var __CONFIG__ = (.*);</script>!) {
       my $obj = JSON::decode_json($1);
-      if (@{$obj->{dataSources}} >= $expected_num_datasources) {
+      if (exists $obj->{dataSources} && (@{$obj->{dataSources}} >= $expected_num_datasources)) {
         return $obj;
       } else {
         die "not enough dataSources, got $rsp";
@@ -149,7 +149,7 @@ sub get_pivot_config
     } else {
       die "can't find __CONFIG__";
     }
-  }, tries => 15);
+  }, tries => 45);
 }
 
 sub post_pivot

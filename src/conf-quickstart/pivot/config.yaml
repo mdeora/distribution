@@ -29,50 +29,158 @@ dataSources:
     engine: druid # Set the engine to druid
     source: wikiticker # The druid dataSource
 
-    # The refresh rule describes how often the data source looks for new data, it has to be fixed here since this data source is static
     refreshRule:
       rule: fixed # also possible: 'query' and 'realtime'
-      time: 2015-09-13T00:00:00Z
+      time: 2016-06-27T22:05:21Z
+
+    defaultPinnedDimensions:
+      - page
+      - user
+      - namespace
 
     dimensions:
       - name: __time
         kind: time
 
+      - name: page
+
+      - name: user
+
       - name: channel
-
-      - name: cityName
-
-      - name: comment
-
-      - name: countryIso
-        title: Country ISO
-        expression: $countryIsoCode
-
-      - name: countryName
-
-      - name: isAnonymous
-
-      - name: isMinor
-
-      - name: isNew
-
-      - name: isRobot
-
-      - name: isUnpatrolled
-
-      - name: metroCode
 
       - name: namespace
 
-      - name: page
+      - name: comment
+
+      - name: cityName
+
+      - name: countryName
+
+      - name: regionName
+
+      - name: commentLength
+
+      - name: deltaBucket
+
+      - name: metroCode
 
       - name: regionIso
         title: Region ISO
         expression: $regionIsoCode
 
-      - name: regionName
+      - name: countryIso
+        title: Country ISO
+        expression: $countryIsoCode
+
+      - name: flags
+
+      - name: diffUrl
+
+      - name: isNew
+        type: boolean
+
+      - name: isMinor
+        type: boolean
+
+      - name: isRobot
+        type: boolean
+
+      - name: isUnpatrolled
+        type: boolean
+
+      - name: isAnonymous
+        type: boolean
+
+    measures:
+      - name: count
+        title: Edits
+        expression: $main.sum($count)
+
+      - name: delta
+
+      - name: avg_delta
+        expression: $main.sum($delta) / $main.sum($count)
+
+      - name: added
+
+      - name: avg_added
+        expression: $main.sum($added) / $main.sum($count)
+
+      - name: deleted
+
+      - name: avg_deleted
+        expression: $main.sum($deleted) / $main.sum($count)
+
+      - name: unique_users
+        title: Unique Users
+        expression: $main.countDistinct($user_unique)
+
+  - name: wikiticker-kafka
+    title: Wikiticker Kafka Tutorial
+    engine: druid # Set the engine to druid
+    source: wikiticker-kafka # The druid dataSource
+
+    refreshRule:
+      rule: query
+      refresh: PT5S
+
+    defaultPinnedDimensions:
+      - page
+      - user
+      - namespace
+
+    dimensions:
+      - name: __time
+        kind: time
+
+      - name: page
 
       - name: user
+
+      - name: channel
+
+      - name: namespace
+
+      - name: comment
+
+      - name: cityName
+
+      - name: countryName
+
+      - name: regionName
+
+      - name: commentLength
+
+      - name: deltaBucket
+
+      - name: metroCode
+
+      - name: regionIso
+        title: Region ISO
+        expression: $regionIsoCode
+
+      - name: countryIso
+        title: Country ISO
+        expression: $countryIsoCode
+
+      - name: flags
+
+      - name: diffUrl
+
+      - name: isNew
+        type: boolean
+
+      - name: isMinor
+        type: boolean
+
+      - name: isRobot
+        type: boolean
+
+      - name: isUnpatrolled
+        type: boolean
+
+      - name: isAnonymous
+        type: boolean
 
     measures:
       - name: count
@@ -135,7 +243,7 @@ dataSources:
 
 
   - name: metrics-kafka
-    title: Metrics Kafka Quickstart
+    title: Metrics Kafka Tutorial
     engine: druid # Set the engine to druid
     source: metrics-kafka # The druid dataSource
 

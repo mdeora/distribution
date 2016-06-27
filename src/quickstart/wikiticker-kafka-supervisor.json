@@ -1,0 +1,77 @@
+{
+  "type": "kafka",
+  "dataSchema": {
+    "dataSource": "wikiticker-kafka",
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "json",
+        "timestampSpec": {
+          "column": "timestamp",
+          "format": "auto"
+        },
+        "dimensionsSpec": {
+          "dimensions": [
+            "isRobot",
+            "channel",
+            "flags",
+            "isUnpatrolled",
+            "page",
+            "diffUrl",
+            "comment",
+            "isNew",
+            "isMinor",
+            "user",
+            "namespace",
+            "commentLength",
+            "deltaBucket",
+            "cityName",
+            "countryIsoCode",
+            "countryName",
+            "isAnonymous",
+            "metroCode",
+            "regionIsoCode",
+            "regionName"
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "count",
+        "type": "count"
+      },
+      {
+        "name": "added",
+        "fieldName": "added",
+        "type": "doubleSum"
+      },
+      {
+        "name": "deleted",
+        "fieldName": "deleted",
+        "type": "doubleSum"
+      },
+      {
+        "name": "delta",
+        "fieldName": "delta",
+        "type": "doubleSum"
+      },
+      {
+        "name": "user_unique",
+        "fieldName": "user",
+        "type": "hyperUnique"
+      }            
+    ],
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "HOUR",
+      "queryGranularity": "NONE"
+    }
+  },
+  "ioConfig": {
+    "topic": "wikiticker",
+    "consumerProperties": {
+      "bootstrap.servers": "localhost:9092"
+    }
+  }
+}

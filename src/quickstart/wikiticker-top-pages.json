@@ -1,7 +1,7 @@
 {
   "queryType" : "topN",
   "dataSource" : "wikiticker",
-  "intervals" : ["2015-09-12/2015-09-13"],
+  "intervals" : ["2016-06-27/2016-06-28"],
   "granularity" : "all",
   "dimension" : "page",
   "metric" : "edits",

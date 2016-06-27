@@ -5,5 +5,5 @@ mkdir "$STAGING_DIR"/quickstart
 cp quickstart/*.json "$STAGING_DIR/quickstart/"
 
 gzip -c -d \
-  quickstart/wikiticker-2015-09-12-sampled.json.gz > \
-  "$STAGING_DIR/quickstart/wikiticker-2015-09-12-sampled.json"
+  quickstart/wikiticker-2016-06-27-sampled.json.gz > \
+  "$STAGING_DIR/quickstart/wikiticker-2016-06-27-sampled.json"

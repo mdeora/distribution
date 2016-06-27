@@ -21,7 +21,7 @@ do
 done
 
 # Unzip quickstart data file
-gunzip "$STAGING_DIR/$IMPLY_NAME/quickstart/wikiticker-2015-09-12-sampled.json.gz"
+gunzip "$STAGING_DIR/$IMPLY_NAME/quickstart/wikiticker-2016-06-27-sampled.json.gz"
 
 # Fetch and build software
 STAGING_DIR="$STAGING_DIR/$IMPLY_NAME" src/build/zk

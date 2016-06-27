@@ -5,7 +5,7 @@
       "type" : "hadoop",
       "inputSpec" : {
         "type" : "static",
-        "paths" : "quickstart/wikiticker-2015-09-12-sampled.json"
+        "paths" : "quickstart/wikiticker-2016-06-27-sampled.json"
       }
     },
     "dataSchema" : {
@@ -14,7 +14,7 @@
         "type" : "uniform",
         "segmentGranularity" : "day",
         "queryGranularity" : "none",
-        "intervals" : ["2015-09-12/2015-09-13"]
+        "intervals" : ["2016-06-27/2016-06-28"]
       },
       "parser" : {
         "type" : "string",
@@ -37,12 +37,16 @@
               "page",
               "regionIsoCode",
               "regionName",
-              "user"
+              "user",
+              "commentLength",
+              "deltaBucket",
+              "flags",
+              "diffUrl"
             ]
           },
           "timestampSpec" : {
             "format" : "auto",
-            "column" : "time"
+            "column" : "timestamp"
           }
         }
       },

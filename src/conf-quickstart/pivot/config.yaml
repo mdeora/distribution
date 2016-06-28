@@ -28,6 +28,8 @@ dataSources:
     title: Wikiticker Quickstart
     engine: druid # Set the engine to druid
     source: wikiticker # The druid dataSource
+    
+    introspection: no-autofill
 
     refreshRule:
       rule: query
@@ -128,6 +130,8 @@ dataSources:
     title: Wikiticker Kafka Tutorial
     engine: druid # Set the engine to druid
     source: wikiticker-kafka # The druid dataSource
+    
+    introspection: no-autofill
 
     refreshRule:
       rule: query

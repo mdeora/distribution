@@ -7,7 +7,7 @@ use File::Temp qw/tempfile/;
 use ImplyTest;
 use JSON;
 use Test::Differences;
-use Test::More tests => 12;
+use Test::More tests => 11;
 
 my $iap = ImplyTest->new;
 my $dir = $iap->dir;
@@ -25,121 +25,64 @@ is($iap->await_load('wikiticker'), 100, 'example loading complete');
 
 # Direct Druid query
 my $druid_result = $iap->query_druid(JSON::decode_json(scalar qx[cat $dir/quickstart/wikiticker-top-pages.json]));
-my $druid_expected = [{
-  'result' => [
-    {'page' => 'Wikipedia:Vandalismusmeldung', 'edits' => 33},
-    {'page' => 'User:Cyde/List of candidates for speedy deletion/Subpage','edits' => 28},
-    {'page' => 'Jeremy Corbyn','edits' => 27},
-    {'edits' => 21,'page' => 'Wikipedia:Administrators\' noticeboard/Incidents'},
-    {'edits' => 20,'page' => 'Flavia Pennetta'},
-    {'edits' => 18,'page' => 'Total Drama Presents: The Ridonculous Race'},
-    {'edits' => 18,'page' => 'User talk:Dudeperson176123'},
-    {'page' => "Wikip\x{e9}dia:Le Bistro/12 septembre 2015",'edits' => 18},
-    {'edits' => 17,'page' => 'Wikipedia:In the news/Candidates'},
-    {'page' => 'Wikipedia:Requests for page protection','edits' => 17},
-    {'edits' => 16,'page' => 'Utente:Giulio Mainardi/Sandbox'},
-    {'edits' => 16,'page' => 'Wikipedia:Administrator intervention against vandalism'},
-    {'page' => 'Anthony Martial','edits' => 15},
-    {'page' => 'Template talk:Connected contributor','edits' => 13},
-    {'edits' => 12,'page' => 'Chronologie de la Lorraine'},
-    {'page' => 'Wikipedia:Files for deletion/2015 September 12','edits' => 12},
-    {'edits' => 12,'page' => "\x{413}\x{43e}\x{43c}\x{43e}\x{441}\x{435}\x{43a}\x{441}\x{443}\x{430}\x{43b}\x{44c}\x{43d}\x{44b}\x{439} \x{43e}\x{431}\x{440}\x{430}\x{437} \x{436}\x{438}\x{437}\x{43d}\x{438}"},
-    {'edits' => 11,'page' => 'Constructive vote of no confidence'},
-    {'edits' => 11,'page' => 'Homo naledi'},
-    {'edits' => 11,'page' => 'Kim Davis (county clerk)'},
-    {'page' => 'Vorlage:Revert-Statistik','edits' => 11},
-    {'edits' => 11,'page' => "\x{41a}\x{43e}\x{43d}\x{441}\x{442}\x{438}\x{442}\x{443}\x{446}\x{438}\x{44f} \x{42f}\x{43f}\x{43e}\x{43d}\x{441}\x{43a}\x{43e}\x{439} \x{438}\x{43c}\x{43f}\x{435}\x{440}\x{438}\x{438}"},
-    {'page' => 'The Naked Brothers Band (TV series)','edits' => 10},
-    {'page' => 'User talk:Buster40004','edits' => 10},
-    {'edits' => 10,'page' => 'User:Valmir144/sandbox'}
-  ],
-  'timestamp' => '2015-09-12T00:46:58.771Z'
-}];
+my $druid_expected = JSON::decode_json(<<'EOT');
+[
+  {
+    "timestamp":"2016-06-27T00:00:11.080Z",
+    "result":[
+      {"edits":29,"page":"Copa América Centenario"},
+      {"edits":16,"page":"User:Cyde/List of candidates for speedy deletion/Subpage"},
+      {"edits":16,"page":"Wikipedia:Administrators' noticeboard/Incidents"},
+      {"edits":15,"page":"2016 Wimbledon Championships – Men's Singles"},
+      {"edits":15,"page":"Wikipedia:Administrator intervention against vandalism"},
+      {"edits":15,"page":"Wikipedia:Vandalismusmeldung"},
+      {"edits":12,"page":"The Winds of Winter (Game of Thrones)"},
+      {"edits":12,"page":"ولاية الجزائر"},
+      {"edits":10,"page":"Copa América"},
+      {"edits":10,"page":"Lionel Messi"},
+      {"edits":10,"page":"Wikipedia:Requests for page protection"},
+      {"edits":10,"page":"Wikipedia:Usernames for administrator attention"},
+      {"edits":10,"page":"Википедия:Опросы/Унификация шаблонов «Не переведено»"},
+      {"edits":9,"page":"Bailando 2015"},
+      {"edits":9,"page":"Bud Spencer"},
+      {"edits":9,"page":"User:Osterb/sandbox"},
+      {"edits":9,"page":"Wikipédia:Le Bistro/27 juin 2016"},
+      {"edits":9,"page":"Ветра зимы (Игра престолов)"},
+      {"edits":8,"page":"Användare:Lsjbot/Namnkonflikter-PRIVAT"},
+      {"edits":8,"page":"Eurocopa 2016"},
+      {"edits":8,"page":"Mistrzostwa Europy w Piłce Nożnej 2016"},
+      {"edits":8,"page":"Usuario:Carmen González C/Science and technology in China"},
+      {"edits":8,"page":"Wikipedia:Administrators' noticeboard"},
+      {"edits":8,"page":"Wikipédia:Demande de suppression immédiate"},
+      {"edits":8,"page":"World Deaf Championships"}
+    ]
+  }
+]
+EOT
 
 eq_or_diff($druid_result, $druid_expected, 'example druid query results are as expected');
 
 # Pivot home page
 my $pivot_result = $iap->get_pivot_config(1);
-my @datasources = sort map { $_->{name} } @{$pivot_result->{'dataSources'}};
+my @datasources = sort map { $_->{name} } @{$pivot_result->{'appSettings'}{'dataSources'}};
 eq_or_diff(\@datasources, ['wikiticker'], 'example pivot config includes all datasources');
 
 # PlyQL query
 my $plyql_result = $iap->post_pivot("/plyql", {
-  query => "SELECT page, SUM(count) AS Edits FROM wikiticker WHERE '2015-09-12T00:00:00' <= __time AND __time < '2015-09-13T00:00:00' GROUP BY page ORDER BY Edits DESC LIMIT 5",
+  query => "SELECT page, SUM(count) AS Edits FROM wikiticker WHERE '2016-06-27' <= __time AND __time < '2016-06-28' GROUP BY page ORDER BY Edits DESC LIMIT 5",
   outputType => 'json'
 });
-my $plyql_expected = [
-  {"Edits" => 33, "page" => "Wikipedia:Vandalismusmeldung"},
-  {"Edits" => 28, "page" => "User:Cyde/List of candidates for speedy deletion/Subpage"},
-  {"Edits" => 27, "page" => "Jeremy Corbyn"},
-  {"Edits" => 21, "page" => "Wikipedia:Administrators' noticeboard/Incidents"},
-  {"Edits" => 20, "page" => "Flavia Pennetta"}
-];
-
-eq_or_diff($plyql_result, $plyql_expected, 'example plyql query results are as expected');
-
-# Plywood query
-my $plywood_query = JSON::decode_json(<<'EOT');
-{
-   "dataSource" : "wikiticker",
-   "expression" : {
-      "actions" : [
-        {
-          "action" : "apply",
-          "expression" : {
-             "actions" : [
-                {
-                   "action" : "filter",
-                   "expression" : {
-                      "actions" : [
-                         {
-                            "action" : "in",
-                            "expression" : {
-                               "op" : "literal",
-                               "type" : "TIME_RANGE",
-                               "value" : {
-                                  "end" : "2015-09-12T23:59:59.200Z",
-                                  "start" : "2015-09-09T23:59:59.200Z"
-                               }
-                            }
-                         }
-                      ],
-                      "expression" : {"name":"__time", "op":"ref"},
-                      "op" : "chain"
-                   }
-                }
-             ],
-             "expression" : {"name":"main", "op":"ref"},
-             "op" : "chain"
-          },
-          "name" : "main"
-        },
-        {
-          "action" : "apply",
-          "expression" : {
-             "actions" : [{"action":"sum","expression":{"name":"count","op":"ref"}}],
-             "expression" : {"name":"main","op":"ref"},
-             "op" : "chain"
-          },
-          "name" : "count"
-        }
-      ],
-      "expression" : {
-         "op" : "literal",
-         "type" : "DATASET",
-         "value" : [{}]
-      },
-      "op" : "chain"
-   }
-}
+my $plyql_expected = JSON::decode_json(<<'EOT');
+[
+  {"Edits":29,"page":"Copa América Centenario"},
+  {"Edits":16,"page":"User:Cyde/List of candidates for speedy deletion/Subpage"},
+  {"Edits":16,"page":"Wikipedia:Administrators' noticeboard/Incidents"},
+  {"Edits":15,"page":"2016 Wimbledon Championships – Men's Singles"},
+  {"Edits":15,"page":"Wikipedia:Administrator intervention against vandalism"}
+]
 EOT
 
-my $plywood_result = $iap->post_pivot("/plywood", $plywood_query);
-my $plywood_expected = [
-  {"count" => 39243}
-];
-
-eq_or_diff($plywood_result, $plywood_expected, 'example plywood query results are as expected');
+eq_or_diff($plyql_result, $plyql_expected, 'example plyql query results are as expected');
 }
 
 #
@@ -239,7 +182,7 @@ eq_or_diff($query_result, $expected_result, 'pageviews druid query results are a
 
 # Pivot home page
 my $pivot_result = $iap->get_pivot_config(2);
-my @datasources = sort map { $_->{name} } @{$pivot_result->{'dataSources'}};
+my @datasources = sort map { $_->{name} } @{$pivot_result->{'appSettings'}{'dataSources'}};
 eq_or_diff(\@datasources, ['pageviews', 'wikiticker'], 'pageviews pivot config includes all datasources');
 
 # PlyQL query

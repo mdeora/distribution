@@ -73,7 +73,7 @@ eq_or_diff($druid_result, $druid_expected, 'example druid query results are as e
 
 # Pivot home page
 my $pivot_result = $iap->get_pivot_config(1);
-my @datasources = sort map { $_->{name} } @{$pivot_result->{'dataSources'}};
+my @datasources = sort map { $_->{name} } @{$pivot_result->{'appSettings'}{'dataSources'}};
 eq_or_diff(\@datasources, ['metrics'], 'example pivot config includes metrics datasource');
 
 # PlyQL query

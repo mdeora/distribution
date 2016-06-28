@@ -38,6 +38,13 @@ dataSources:
       - user
       - namespace
 
+    attributeOverrides:
+      - name: commentLength
+        type: NUMBER
+
+      - name: deltaBucket
+        type: NUMBER      
+
     dimensions:
       - name: __time
         kind: time
@@ -59,8 +66,10 @@ dataSources:
       - name: regionName
 
       - name: commentLength
+        kind: number
 
       - name: deltaBucket
+        kind: number
 
       - name: metroCode
 
@@ -77,19 +86,19 @@ dataSources:
       - name: diffUrl
 
       - name: isNew
-        type: boolean
+        kind: boolean
 
       - name: isMinor
-        type: boolean
+        kind: boolean
 
       - name: isRobot
-        type: boolean
+        kind: boolean
 
       - name: isUnpatrolled
-        type: boolean
+        kind: boolean
 
       - name: isAnonymous
-        type: boolean
+        kind: boolean
 
     measures:
       - name: count
@@ -129,6 +138,13 @@ dataSources:
       - user
       - namespace
 
+    attributeOverrides:
+      - name: commentLength
+        type: NUMBER
+
+      - name: deltaBucket
+        type: NUMBER      
+
     dimensions:
       - name: __time
         kind: time
@@ -150,8 +166,10 @@ dataSources:
       - name: regionName
 
       - name: commentLength
+        kind: number
 
       - name: deltaBucket
+        kind: number
 
       - name: metroCode
 
@@ -168,19 +186,19 @@ dataSources:
       - name: diffUrl
 
       - name: isNew
-        type: boolean
+        kind: boolean
 
       - name: isMinor
-        type: boolean
+        kind: boolean
 
       - name: isRobot
-        type: boolean
+        kind: boolean
 
       - name: isUnpatrolled
-        type: boolean
+        kind: boolean
 
       - name: isAnonymous
-        type: boolean
+        kind: boolean
 
     measures:
       - name: count

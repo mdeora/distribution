@@ -30,8 +30,8 @@ dataSources:
     source: wikiticker # The druid dataSource
 
     refreshRule:
-      rule: fixed # also possible: 'query' and 'realtime'
-      time: 2016-06-27T22:05:21Z
+      rule: query
+      refresh: PT1H
 
     defaultPinnedDimensions:
       - page

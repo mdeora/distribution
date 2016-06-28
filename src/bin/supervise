@@ -37,11 +37,12 @@ sub read_config_file
 
   my @commands;
   my @verify;
+  my $kill_timeout;
   while (my $line = <$config_fh>) {
     chomp $line;
     next if $line =~ /^(\s*\#.*|\s*)$/;
 
-    if ($line =~ /^(:verify|(?:\!p[0-9]+\s+)?[^:]\S+)\s+(.+)$/) {
+    if ($line =~ /^(:verify|:kill-timeout|(?:\!p[0-9]+\s+)?[^:]\S+)\s+(.+)$/) {
       my $name = $1;
       my $order = 50;
       my $command = $2;
@@ -53,6 +54,8 @@ sub read_config_file
 
       if ($name eq ':verify') {
         push @verify, $command;
+      } elsif ($name eq ':kill-timeout') {
+        $kill_timeout = int($command);
       } else {
         die "Duplicate command: $line\n" if grep { $_->{name} eq $name } @commands;
         push @commands, {
@@ -71,7 +74,7 @@ sub read_config_file
   }
 
   close $config_fh;
-  return { commands => \@commands, verify => \@verify };
+  return { commands => \@commands, verify => \@verify, 'kill-timeout' => $kill_timeout };
 }
 
 sub stringify_exit_status
@@ -144,7 +147,7 @@ open STDERR, ">&STDOUT" or die;
 my %opt = (
   'chdir' => realpath("$FindBin::Bin/.."),
   'vardir' => realpath("$FindBin::Bin/../var"),
-  'kill-timeout' => 10,
+  'kill-timeout' => 360,
 );
 
 usage() unless GetOptions(
@@ -163,6 +166,11 @@ my $config = read_config_file($opt{'conf'});
 
 if (!@commands) {
   die "Nothing to run.\n";
+}
+
+# Potentially override --kill-timeout
+if (defined $config->{'kill-timeout'}) {
+  $opt{'kill-timeout'} = $config->{'kill-timeout'};
 }
 
 # Remember where vardir, svdir are after chdiring
@@ -273,7 +281,12 @@ while (1) {
       }
 
       if ($command->{killed} != $want_signal) {
-        logit "Sending signal[$want_signal] to command[" . pretty($command->{name}, 'bold') . "].";
+        if ($want_signal != 9) {
+          my $kt = $opt{'kill-timeout'};
+          logit "Sending signal[$want_signal] to command[" . pretty($command->{name}, 'bold') . "] (timeout ${kt}s).";
+        } else {
+          logit "Sending signal[$want_signal] to command[" . pretty($command->{name}, 'bold') . "].";
+        }
         kill $want_signal, $command->{pid} or logit "WARN: Could not signal pid: $command->{pid}";
         $command->{killed} = $want_signal;
       }

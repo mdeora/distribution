@@ -3,7 +3,7 @@
 # Clone upstream project
 UPSTREAM_NAME="tranquility"
 UPSTREAM_REPO="https://github.com/druid-io/$UPSTREAM_NAME.git"
-UPSTREAM_COMMITISH="v0.8.1"
+UPSTREAM_COMMITISH="v0.8.2"
 UPSTREAM_DIR="$TMP_DIR/$UPSTREAM_NAME.git"
 
 git clone -b "$UPSTREAM_COMMITISH" --single-branch --depth 1 "$UPSTREAM_REPO" "$UPSTREAM_DIR"
